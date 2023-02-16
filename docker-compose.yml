@@ -1,0 +1,19 @@
+version: "3.7"
+services: 
+  mongo: 
+    image: mongo
+    container_name: db
+    restart: always
+    env_file:
+      - .env
+    ports:
+      - '${DB_PORT}:27017'
+    volumes:
+      - dbdata-volume:data/db
+    enviroment: 
+      - MONGO_INITDB_USERNAME: ${DB_USERNAME}
+      - MONGO_INITDB_PASSWORD: ${DB_PASSWORD}
+      - MONGO_INITDB_DATABASE: ${DB_DATABASE}
+
+volumes:
+  dbdata-volume: 
