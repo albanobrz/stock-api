@@ -1,19 +1,26 @@
-version: "3.7"
-services: 
-  mongo: 
-    image: mongo
-    container_name: db
-    restart: always
-    env_file:
-      - .env
-    ports:
-      - '${DB_PORT}:27017'
-    volumes:
-      - dbdata-volume:data/db
-    enviroment: 
-      - MONGO_INITDB_USERNAME: ${DB_USERNAME}
-      - MONGO_INITDB_PASSWORD: ${DB_PASSWORD}
-      - MONGO_INITDB_DATABASE: ${DB_DATABASE}
+version: "3.8"
 
-volumes:
-  dbdata-volume: 
+services: 
+  api: 
+    build: 
+      .
+    restart: always
+    ports:
+      - '8080:8080'
+    deploy: 
+      mode: replicated
+      replicas: 1
+    depends_on:
+      - mongo
+
+  mongo:
+    image: 'mongo:latest'
+    container_name: mongodb
+    restart: unless-stopped
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: password
+    ports: 
+      - '27017:27017'
+    volumes:
+      - ./database-data:/data/db
